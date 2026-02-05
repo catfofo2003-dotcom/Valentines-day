@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <title>Mon Valentin 💘</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <style>
+    * { box-sizing: border-box; font-family: 'Segoe UI', sans-serif; }
+    body {
+      margin: 0; height: 100vh; overflow: hidden;
+      display: flex; align-items: center; justify-content: center;
+      background: radial-gradient(circle at top, #7a0f1b, #b11226, #e63946);
+    }
+    .card {
+      background: linear-gradient(180deg, #ffffff, #fff5f7);
+      padding: 3rem;
+      border-radius: 32px;
+      text-align: center;
+      max-width: 92%;
+      position: relative;
+      box-shadow: 0 40px 80px rgba(122,15,27,0.4);
+      animation: pulse 1.5s infinite;
+      border: 4px solid #e63946;
+    }
+    @keyframes pulse { 0%,100%{transform:scale(1)}50%{transform:scale(1.05)} }
+    h1 { color:#b11226; text-shadow: 0 2px 8px rgba(177,18,38,0.4); font-size:2.2rem; }
+    p { color:#444; font-size:1.1rem; }
+    .buttons { position: relative; height: 140px; margin-top: 2rem; }
+    button {
+      border:none; border-radius:999px; padding:0.9rem 1.8rem;
+      font-size:1.1rem; cursor:pointer; position:absolute;
+    }
+    #yesBtn { background:linear-gradient(135deg,#b11226,#e63946); color:white; left:0; }
+    #noBtn { background:#6c757d; color:#fff; right:0; }
+    .final { display:none; }
+    .hearts, .confetti {
+      position: fixed; inset:0; pointer-events:none;
+    }
+    .heart { position:absolute; animation: floatUp 4s linear forwards; }
+    @keyframes floatUp { from{transform:translateY(0);opacity:1} to{transform:translateY(-100vh);opacity:0} }
+    .confetto { position:absolute; width:8px; height:12px; animation: fall 3s linear forwards; }
+    @keyframes fall { to{transform:translateY(100vh) rotate(720deg);opacity:0} }
+    .certificate {
+      margin-top:1.5rem; padding:1.5rem; border:3px dashed #e63946;
+      border-radius:16px; font-size:0.95rem;
+    }
+    @media(max-width:600px){ h1{font-size:1.8rem} }
+  </style>
+</head>
+<body>
+
+<div class="card" id="card">
+  <h1>Antoine 💌</h1>
+  <p id="question">Will you be my Valentine, mon amour 💕? </p>
+
+  <div class="buttons" id="buttons">
+    <button id="yesBtn">Yes 💖</button>
+    <button id="noBtn">No 💔</button>
+  </div>
+
+  <div class="final" id="final">
+    <h2>I KNEW IT 😭💘</h2>
+    <p>I knew you would say yes, mon cœur💞 .<br>You are now officially and irrevocably my Valentine.</p>
+
+    <div class="certificate">
+      <strong>Official Valentine Certificate</strong><br><br>
+      Ce document certifie qu’<strong>Antoine</strong><br>
+      appartient désormais au cœur de Farah 💞<br><br>
+      Signé avec amour, baisers et zéro possibilité de retour.
+    </div>
+
+    <img src="https://media.giphy.com/media/3oriO6qJiXajN0TyDu/giphy.gif" width="240" style="margin-top:2rem;border-radius:20px;box-shadow:0 10px 30px rgba(0,0,0,0.2)" />
+  </div>
+</div>
+
+<div class="hearts" id="hearts"></div>
+<div class="confetti" id="confetti"></div>
+
+<audio id="sadMusic" src="https://cdn.pixabay.com/audio/2022/03/10/audio_6b27d4b3e2.mp3"></audio>
+<audio id="loveMusic" src="https://cdn.pixabay.com/audio/2022/03/15/audio_2c4f3b8fa7.mp3"></audio>
+
+<script>
+const noBtn = document.getElementById('noBtn');
+const yesBtn = document.getElementById('yesBtn');
+const buttons = document.getElementById('buttons');
+const final = document.getElementById('final');
+const card = document.getElementById('card');
+const sad = document.getElementById('sadMusic');
+const love = document.getElementById('loveMusic');
+
+const noTexts = [
+  'No 💔',
+  'Are you sure, mon cœur? 😭',
+  'Antoine… please 🥺',
+  'Mon chéri… this hurts 💔',
+  'My heart is breaking 😢',
+  'You wouldn’t do this to me… right?',
+  'No is no longer an option.'
+];
+let count = 0;
+
+
+noBtn.addEventListener('click', moveNo);
+
+function moveNo(){
+  sad.currentTime = 0; sad.volume = 0.6; sad.play();
+  const maxX = buttons.clientWidth - noBtn.offsetWidth;
+  const maxY = buttons.clientHeight - noBtn.offsetHeight;
+  noBtn.style.left = Math.random()*maxX + 'px';
+  noBtn.style.top = Math.random()*maxY + 'px';
+  noBtn.textContent = noTexts[Math.min(count, noTexts.length-1)];
+  card.animate([
+    {transform:'translateX(0)'},
+    {transform:'translateX(-10px)'},
+    {transform:'translateX(10px)'},
+    {transform:'translateX(0)'}
+  ],{duration:400});
+  count++;
+  if(count > 5){ noBtn.style.display='none'; }
+}
+
+yesBtn.addEventListener('click', ()=>{
+  buttons.style.display='none';
+  final.style.display='block';
+  card.style.animation='none';
+  love.volume=0.7; love.play();
+  explodeHearts(); explodeConfetti();
+});
+
+function explodeHearts(){
+  for(let i=0;i<40;i++){
+    const h=document.createElement('div');
+    h.className='heart'; h.textContent='💖';
+    h.style.left=Math.random()*100+'vw';
+    h.style.bottom='-20px';
+    document.getElementById('hearts').appendChild(h);
+    setTimeout(()=>h.remove(),4000);
+  }
+}
+
+function explodeConfetti(){
+  for(let i=0;i<80;i++){
+    const c=document.createElement('div');
+    c.className='confetto';
+    c.style.left=Math.random()*100+'vw';
+    c.style.background=['#e63946','#ffb3c1','#ffd6e0'][Math.floor(Math.random()*3)];
+    document.getElementById('confetti').appendChild(c);
+    setTimeout(()=>c.remove(),3000);
+  }
+}
+</script>
+
+</body>
+</html>
